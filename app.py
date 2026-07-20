@@ -147,6 +147,7 @@ async def save_recipe(request: Request, db: Session = Depends(get_db)):
 
     recipe = Recipe(
         recipe_name=payload.get("recipe_name", "Untitled Recipe"),
+        emoji=payload.get("emoji", "🍽️"),
         cuisine=payload.get("cuisine"),
         meal_type=payload.get("meal_type"),
         diet_preference=payload.get("diet_preference"),

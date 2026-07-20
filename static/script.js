@@ -105,7 +105,17 @@ function renderRecipe(recipe) {
 
   // Download only becomes available once the recipe is saved (has an id + markdown on server)
   const downloadBtn = document.getElementById('downloadBtn');
-  downloadBtn.setAttribute('disabled', 'true');
+  if (downloadBtn) downloadBtn.setAttribute('disabled', 'true');
+
+  if (recipe.emoji) {
+    updateStickers(recipe.emoji);
+  }
+}
+
+function updateStickers(emoji) {
+  document.querySelectorAll('.sticker').forEach(sticker => {
+    sticker.textContent = emoji;
+  });
 }
 
 // ---------------------------------------------------------------------

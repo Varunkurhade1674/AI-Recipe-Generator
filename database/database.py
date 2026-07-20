@@ -24,6 +24,14 @@ def init_db() -> None:
     from database import models  # noqa: F401 (ensures models are registered)
     Base.metadata.create_all(bind=engine)
 
+    # Simple migration: add emoji column if missing
+    try:
+        with engine.begin() as conn:
+            from sqlalchemy import text
+            conn.execute(text("ALTER TABLE recipes ADD COLUMN emoji VARCHAR(10);"))
+    except Exception:
+        pass  # Column already exists or table not ready
+
 
 def get_db():
     """FastAPI dependency that yields a DB session and closes it afterward."""

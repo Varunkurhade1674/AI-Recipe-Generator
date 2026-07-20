@@ -17,6 +17,7 @@ class Recipe(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     recipe_name = Column(String(255), nullable=False)
+    emoji = Column(String(10), nullable=True)
     cuisine = Column(String(100), nullable=True)
     meal_type = Column(String(100), nullable=True)
     diet_preference = Column(String(100), nullable=True)
@@ -42,6 +43,7 @@ class Recipe(Base):
         return {
             "id": self.id,
             "recipe_name": self.recipe_name,
+            "emoji": self.emoji,
             "cuisine": self.cuisine,
             "meal_type": self.meal_type,
             "diet_preference": self.diet_preference,

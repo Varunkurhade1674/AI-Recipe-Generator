@@ -89,6 +89,7 @@ def _parse_recipe_output(text: str) -> dict:
         return match.group(1).strip() if match else default
 
     recipe_name = _extract(r"RECIPE_NAME:\s*(.+)", "Untitled Recipe")
+    dish_emoji = _extract(r"DISH_EMOJI:\s*(.+?)(?=\nDESCRIPTION:|\Z)", "🍽️")
     description = _extract(r"DESCRIPTION:\s*(.+?)(?=\n[A-Z_]+:|\Z)")
     prep_time = _extract(r"PREP_TIME:\s*(.+)")
     cooking_time = _extract(r"COOKING_TIME:\s*(.+)")
@@ -112,6 +113,7 @@ def _parse_recipe_output(text: str) -> dict:
 
     return {
         "recipe_name": _first_line(recipe_name),
+        "emoji": _first_line(dish_emoji) or "🍽️",
         "description": description,
         "prep_time": _first_line(prep_time),
         "cooking_time": _first_line(cooking_time),
