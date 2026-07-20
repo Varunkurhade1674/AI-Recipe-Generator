@@ -43,6 +43,8 @@ body {
   width: 100%;
   text-align: center;
   animation: fadeInUp 0.5s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-logo { font-size: 44px; margin-bottom: 8px; }
@@ -145,6 +147,8 @@ body {
 .app-shell {
   display: flex;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 .sidebar {
@@ -158,6 +162,7 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
+  z-index: 10;
 }
 
 .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 0 6px; }
@@ -384,10 +389,45 @@ body {
 
 @media (max-width: 860px) {
   .app-shell { flex-direction: column; }
-  .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; flex-wrap: wrap; }
+  .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; flex-wrap: wrap; z-index: 10; }
   .sidebar-nav { flex-direction: row; }
   .logout-item { margin-top: 0; }
   .main-area { padding: 24px; }
   .form-grid, .recipe-columns, .tips-grid { grid-template-columns: 1fr; }
   .nutrition-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---------- Food Stickers Background ---------- */
+
+.food-stickers {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.sticker {
+  position: absolute;
+  font-size: 3rem;
+  opacity: 0.15;
+  animation: floatUp linear infinite;
+  user-select: none;
+}
+
+.sticker:nth-child(1) { left: 10%; animation-duration: 25s; animation-delay: 0s; font-size: 3.5rem; }
+.sticker:nth-child(2) { left: 30%; animation-duration: 30s; animation-delay: -5s; font-size: 2.5rem; }
+.sticker:nth-child(3) { left: 50%; animation-duration: 22s; animation-delay: -10s; font-size: 4rem; }
+.sticker:nth-child(4) { left: 70%; animation-duration: 28s; animation-delay: -2s; font-size: 3rem; }
+.sticker:nth-child(5) { left: 90%; animation-duration: 35s; animation-delay: -15s; font-size: 2rem; }
+.sticker:nth-child(6) { left: 20%; animation-duration: 20s; animation-delay: -8s; font-size: 3.2rem; }
+.sticker:nth-child(7) { left: 60%; animation-duration: 26s; animation-delay: -12s; font-size: 2.8rem; }
+.sticker:nth-child(8) { left: 80%; animation-duration: 32s; animation-delay: -4s; font-size: 3.6rem; }
+
+@keyframes floatUp {
+  0% { transform: translateY(110vh) rotate(0deg); }
+  100% { transform: translateY(-20vh) rotate(360deg); }
 }
