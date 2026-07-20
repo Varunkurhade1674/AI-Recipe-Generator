@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Recipe Generator — Dashboard</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="sidebar-logo">🍳</span>
+      <span class="sidebar-title">Recipe AI</span>
+    </div>
+
+    <div class="status-pill">🟢 Connected to {{ provider }}</div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-view="generate">
+        <span>✨</span> Generate Recipe
+      </button>
+      <button class="nav-item" data-view="history">
+        <span>📖</span> Recipe History
+      </button>
+    </nav>
+
+    <a href="/logout" class="nav-item logout-item">
+      <span>🚪</span> Logout
+    </a>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-area">
+
+    <!-- Generate View -->
+    <section id="view-generate" class="view active">
+      <header class="view-header">
+        <h1>Generate a Recipe</h1>
+        <p>Tell us what you have, we'll do the cooking (in text form).</p>
+      </header>
+
+      <form id="recipeForm" class="recipe-form card">
+        <div class="form-grid">
+          <div class="form-field full">
+            <label for="ingredients">Ingredients</label>
+            <textarea id="ingredients" name="ingredients" rows="2" placeholder="e.g. chicken breast, garlic, spinach, cream" required></textarea>
+          </div>
+
+          <div class="form-field">
+            <label for="cuisine">Cuisine</label>
+            <select id="cuisine" name="cuisine">
+              <option value="Any">Any</option>
+              <option>Indian</option>
+              <option>Italian</option>
+              <option>Mexican</option>
+              <option>Chinese</option>
+              <option>Thai</option>
+              <option>Mediterranean</option>
+              <option>American</option>
+              <option>Japanese</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="meal_type">Meal Type</label>
+            <select id="meal_type" name="meal_type">
+              <option value="Any">Any</option>
+              <option>Breakfast</option>
+              <option>Lunch</option>
+              <option>Dinner</option>
+              <option>Snack</option>
+              <option>Dessert</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="diet_preference">Diet Preference</label>
+            <select id="diet_preference" name="diet_preference">
+              <option value="None">None</option>
+              <option>Vegetarian</option>
+              <option>Vegan</option>
+              <option>Keto</option>
+              <option>High-Protein</option>
+              <option>Gluten-Free</option>
+              <option>Low-Carb</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="difficulty">Difficulty</label>
+            <select id="difficulty" name="difficulty">
+              <option>Easy</option>
+              <option selected>Medium</option>
+              <option>Hard</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="cooking_time">Cooking Time</label>
+            <select id="cooking_time" name="cooking_time">
+              <option>Under 15 minutes</option>
+              <option selected>15–30 minutes</option>
+              <option>30–60 minutes</option>
+              <option>Over 1 hour</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="generateBtn">
+          <span id="generateBtnText">Generate Recipe</span>
+          <span id="generateSpinner" class="spinner hidden"></span>
+        </button>
+      </form>
+
+      <div id="resultArea" class="result-area hidden">
+
+        <div class="recipe-card card" id="recipeCard">
+          <div class="recipe-card-header">
+            <h2 id="recipeName">—</h2>
+            <div class="recipe-actions">
+              <button class="btn-icon" id="copyBtn" title="Copy Recipe">📋 Copy</button>
+              <button class="btn-icon" id="saveBtn" title="Save Recipe">💾 Save</button>
+              <button class="btn-icon" id="downloadBtn" title="Download Markdown" disabled>⬇️ Markdown</button>
+              <a href="#" class="btn-icon" id="youtubeBtn" title="Search on YouTube" target="_blank" style="text-decoration: none; display: inline-block;">📺 YouTube</a>
+            </div>
+          </div>
+          <p class="recipe-description" id="recipeDescription"></p>
+
+          <div class="meta-row">
+            <span class="meta-badge">⏱ Prep: <span id="prepTime">—</span></span>
+            <span class="meta-badge">🔥 Cook: <span id="cookTime">—</span></span>
+          </div>
+
+          <div class="recipe-columns">
+            <div>
+              <h3>Ingredients</h3>
+              <pre class="recipe-block" id="ingredientsBlock"></pre>
+            </div>
+            <div>
+              <h3>Instructions</h3>
+              <pre class="recipe-block" id="instructionsBlock"></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="nutrition-card card">
+          <h3>Nutrition (estimated)</h3>
+          <div class="nutrition-grid">
+            <div class="nutrition-item"><span class="n-label">Calories</span><span class="n-value" id="nCalories">—</span></div>
+            <div class="nutrition-item"><span class="n-label">Protein</span><span class="n-value" id="nProtein">—</span></div>
+            <div class="nutrition-item"><span class="n-label">Carbs</span><span class="n-value" id="nCarbs">—</span></div>
+            <div class="nutrition-item"><span class="n-label">Fat</span><span class="n-value" id="nFat">—</span></div>
+          </div>
+        </div>
+
+        <div class="tips-grid">
+          <div class="card tip-card">
+            <h3>👨‍🍳 Cooking Tips</h3>
+            <p id="cookingTips"></p>
+          </div>
+          <div class="card tip-card">
+            <h3>🧊 Storage Tips</h3>
+            <p id="storageTips"></p>
+          </div>
+          <div class="card tip-card">
+            <h3>🔁 Alternative Ingredients</h3>
+            <p id="altIngredients"></p>
+          </div>
+          <div class="card tip-card">
+            <h3>🍽 Serving Suggestions</h3>
+            <p id="servingSuggestions"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- History View -->
+    <section id="view-history" class="view">
+      <header class="view-header">
+        <h1>Recipe History</h1>
+        <p>Everything you've generated and saved, in one place.</p>
+      </header>
+
+      <div class="history-grid" id="historyGrid">
+        {% for r in recipes %}
+        <div class="card history-item" data-recipe-id="{{ r.id }}">
+          <h3>{{ r.recipe_name }}</h3>
+          <p class="history-meta">{{ r.cuisine or "Any" }} · {{ r.meal_type or "Any" }} · {{ r.cooking_time or "—" }}</p>
+          <p class="history-desc">{{ (r.description or "")[:120] }}{% if r.description and r.description|length > 120 %}…{% endif %}</p>
+          <button class="btn-secondary open-history-btn" data-recipe-id="{{ r.id }}">Open Recipe</button>
+        </div>
+        {% else %}
+        <p class="empty-state">No saved recipes yet. Generate one and hit Save!</p>
+        {% endfor %}
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>

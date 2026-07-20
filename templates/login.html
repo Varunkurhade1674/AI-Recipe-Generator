@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Recipe Generator — Connect</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="auth-body">
+
+  <div class="auth-card">
+    <div class="auth-logo">🍳</div>
+    <h1>AI Recipe Generator</h1>
+    <p class="auth-subtitle">Turn your ingredients into a professional recipe, powered by your own API key.</p>
+
+    {% if error %}
+    <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+
+    <form action="/verify" method="post" class="auth-form" id="verifyForm">
+      <label for="provider">Provider</label>
+      <select id="provider" name="provider">
+        <option value="Groq" selected>Groq</option>
+        <option value="OpenAI">OpenAI</option>
+        <option value="Anthropic">Anthropic</option>
+        <option value="Gemini">Gemini</option>
+        <option value="OpenRouter">OpenRouter</option>
+      </select>
+
+      <label for="api_key" id="api_key_label">Groq API Key</label>
+      <input
+        type="password"
+        id="api_key"
+        name="api_key"
+        placeholder="gsk_..."
+        required
+        autocomplete="off"
+      >
+
+      <button type="submit" class="btn-primary" id="verifyBtn">
+        <span id="verifyBtnText">Verify &amp; Continue</span>
+        <span id="verifySpinner" class="spinner hidden"></span>
+      </button>
+    </form>
+
+    <p class="auth-footnote">
+      🔒 Your key is used only for this session. It is never stored on disk, in a database, or in logs.
+    </p>
+  </div>
+
+  <script>
+    const providerSelect = document.getElementById('provider');
+    const apiKeyLabel = document.getElementById('api_key_label');
+    const apiKeyInput = document.getElementById('api_key');
+
+    providerSelect.addEventListener('change', function () {
+      const p = this.value;
+      apiKeyLabel.textContent = p + ' API Key';
+      if (p === 'Groq') apiKeyInput.placeholder = 'gsk_...';
+      else if (p === 'OpenAI') apiKeyInput.placeholder = 'sk-...';
+      else if (p === 'Anthropic') apiKeyInput.placeholder = 'sk-ant-...';
+      else if (p === 'Gemini') apiKeyInput.placeholder = 'AIzaSy...';
+      else if (p === 'OpenRouter') apiKeyInput.placeholder = 'sk-or-v1-...';
+    });
+
+    document.getElementById('verifyForm').addEventListener('submit', function () {
+      document.getElementById('verifyBtnText').textContent = 'Verifying...';
+      document.getElementById('verifySpinner').classList.remove('hidden');
+      document.getElementById('verifyBtn').setAttribute('disabled', 'true');
+    });
+  </script>
+</body>
+</html>
