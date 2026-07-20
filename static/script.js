@@ -107,8 +107,20 @@ function renderRecipe(recipe) {
   const downloadBtn = document.getElementById('downloadBtn');
   if (downloadBtn) downloadBtn.setAttribute('disabled', 'true');
 
-  if (recipe.emoji) {
-    updateStickers(recipe.emoji);
+  const cuisineMap = {
+    'Indian': '🍛',
+    'Italian': '🍝',
+    'Mexican': '🌮',
+    'Chinese': '🥡',
+    'Thai': '🍲',
+    'Mediterranean': '🥗',
+    'American': '🍔',
+    'Japanese': '🍣'
+  };
+
+  const emojiToUse = cuisineMap[recipe.cuisine] || recipe.emoji;
+  if (emojiToUse) {
+    updateStickers(emojiToUse);
   }
 }
 
