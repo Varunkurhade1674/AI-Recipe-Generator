@@ -88,8 +88,19 @@ def _parse_recipe_output(text: str) -> dict:
     into a dictionary. Falls back gracefully if a section is missing or the
     model deviates slightly from the requested format.
     """
+    # Log the raw LLM output to console so we can see what it's generating!
+    print("=== RAW LLM OUTPUT ===")
+    print(text)
+    print("======================")
+
+    # Normalize headers by removing bold/italic marks
+    clean_text = re.sub(r'^\s*[*#]*\s*([A-Z_]+)\s*[*#]*\s*:', r'\n\1:', text, flags=re.MULTILINE)
+    # Strip leading/trailing code blocks
+    clean_text = re.sub(r'^```[a-zA-Z]*\n', '', clean_text, flags=re.MULTILINE)
+    clean_text = re.sub(r'\n```$', '', clean_text, flags=re.MULTILINE)
+
     def _extract(pattern: str, default: str = "") -> str:
-        match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+        match = re.search(pattern, clean_text, re.IGNORECASE | re.DOTALL)
         return match.group(1).strip() if match else default
 
     recipe_name = _extract(r"RECIPE_NAME:\s*(.+)", "Untitled Recipe")

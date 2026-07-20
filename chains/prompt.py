@@ -23,6 +23,8 @@ Difficulty level: {difficulty}
 Target cooking time: {cooking_time}
 
 Requirements:
+- CRITICAL: The core of the recipe MUST be based on the user's requested "Ingredients available". However, you are ENCOURAGED to add basic pantry staples (salt, pepper, oil, water, common spices, basic sauces) to make the recipe viable and delicious.
+- Do NOT output conversational apologies or notes like "Due to constraints...". Just write the ingredients list.
 - Instructions must be simple, numbered, and easy for a home cook to follow.
 - Provide sensible ingredient substitutions where relevant.
 - Provide realistic estimated nutritional values (do not skip this section).
@@ -32,7 +34,7 @@ Requirements:
 Respond using EXACTLY this structure (plain text, keep the headers as-is):
 
 RECIPE_NAME: <name of the dish>
-DISH_EMOJI: <Pick exactly ONE cooked meal emoji from this list: 🍲, 🥘, 🍝, 🍛, 🥗, 🍜, 🍔, 🍕, 🌮, 🌯, 🥪, 🥧, 🍰, 🥞, 🥩, 🍱, 🍛, 🍣. DO NOT use raw ingredients like 🍅 or 🐔!>
+DISH_EMOJI: <Exactly ONE emoji representing the dish (e.g. 🍲, 🧃, 🥗, 🍰)>
 DESCRIPTION: <2-3 sentence appetizing description>
 PREP_TIME: <e.g. 15 minutes>
 COOKING_TIME: <e.g. 30 minutes>
