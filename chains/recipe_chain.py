@@ -75,6 +75,10 @@ def generate_recipe(provider: str, api_key: str, form_data: dict) -> dict:
 
     parsed = _parse_recipe_output(raw_output)
     parsed["raw_markdown"] = _to_markdown(parsed, raw_output)
+    parsed["cuisine"] = form_data.get("cuisine") or "Any"
+    parsed["meal_type"] = form_data.get("meal_type") or "Any"
+    parsed["diet_preference"] = form_data.get("diet_preference") or "None"
+    parsed["difficulty"] = form_data.get("difficulty") or "Medium"
     return parsed
 
 

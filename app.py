@@ -113,6 +113,7 @@ def api_generate_recipe(
     diet_preference: str = Form(""),
     difficulty: str = Form(""),
     cooking_time: str = Form(""),
+    db: Session = Depends(get_db),
 ):
     provider, api_key = require_session_api_key(request)
 
@@ -132,6 +133,35 @@ def api_generate_recipe(
                 "cooking_time": cooking_time,
             },
         )
+        
+        recipe = Recipe(
+            recipe_name=recipe_data.get("recipe_name", "Untitled Recipe"),
+            emoji=recipe_data.get("emoji", "🍽️"),
+            cuisine=recipe_data.get("cuisine"),
+            meal_type=recipe_data.get("meal_type"),
+            diet_preference=recipe_data.get("diet_preference"),
+            difficulty=recipe_data.get("difficulty"),
+            ingredients=recipe_data.get("ingredients", ""),
+            instructions=recipe_data.get("instructions", ""),
+            description=recipe_data.get("description"),
+            prep_time=recipe_data.get("prep_time"),
+            cooking_time=recipe_data.get("cooking_time"),
+            calories=recipe_data.get("calories"),
+            protein=recipe_data.get("protein"),
+            carbs=recipe_data.get("carbs"),
+            fat=recipe_data.get("fat"),
+            cooking_tips=recipe_data.get("cooking_tips"),
+            storage_tips=recipe_data.get("storage_tips"),
+            alternative_ingredients=recipe_data.get("alternative_ingredients"),
+            serving_suggestions=recipe_data.get("serving_suggestions"),
+            raw_markdown=recipe_data.get("raw_markdown"),
+        )
+        db.add(recipe)
+        db.commit()
+        db.refresh(recipe)
+        recipe_data["id"] = recipe.id
+        recipe_data["created_at"] = recipe.created_at.isoformat() if recipe.created_at else None
+
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=502, detail=f"Recipe generation failed: {exc}")
 

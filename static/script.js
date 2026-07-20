@@ -62,9 +62,14 @@ function setupRecipeForm() {
 
       const recipe = await response.json();
       currentRecipe = recipe;
-      currentRecipeId = null; // freshly generated, not yet saved
+      currentRecipeId = recipe.id; // It has an id immediately because we auto-save!
       renderRecipe(recipe);
-      showToast('Recipe generated!', 'success');
+      prependHistoryCard(recipe);
+      
+      const saveBtn = document.getElementById('saveBtn');
+      if (saveBtn) saveBtn.style.display = 'none'; // No need to manually save anymore
+      
+      showToast('Recipe generated and saved to history!', 'success');
 
       const resultArea = document.getElementById('resultArea');
       resultArea.classList.remove('hidden');
@@ -103,9 +108,9 @@ function renderRecipe(recipe) {
     ytBtn.href = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(recipe.recipe_name + ' recipe');
   }
 
-  // Download only becomes available once the recipe is saved (has an id + markdown on server)
+  // Download becomes available immediately because it's auto-saved
   const downloadBtn = document.getElementById('downloadBtn');
-  if (downloadBtn) downloadBtn.setAttribute('disabled', 'true');
+  if (downloadBtn) downloadBtn.removeAttribute('disabled');
 
   const cuisineMap = {
     'Indian': '🍛',
@@ -208,6 +213,9 @@ function setupHistoryOpeners() {
         currentRecipeId = recipe.id;
         renderRecipe(recipe);
         document.getElementById('downloadBtn').removeAttribute('disabled');
+        
+        const saveBtn = document.getElementById('saveBtn');
+        if (saveBtn) saveBtn.style.display = 'none';
 
         // Switch to Generate view so the recipe card is visible
         document.querySelectorAll('.nav-item[data-view]').forEach((n) => n.classList.remove('active'));
