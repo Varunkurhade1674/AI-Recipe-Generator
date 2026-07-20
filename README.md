@@ -14,13 +14,15 @@ Every recipe you save is persisted to a local SQLite database via SQLAlchemy, vi
 
 ## Features
 
-- 🔐 Bring-your-own Groq API key, verified live before access is granted
-- 🧠 LangChain LCEL chain: `PromptTemplate → ChatGroq → StrOutputParser`
+- 🔐 Bring-your-own API key (Supports Groq, OpenAI, Anthropic, and Google Gemini), verified live before access is granted
+- 🧠 LangChain LCEL chain: `PromptTemplate → ChatModel → StrOutputParser`
 - 📝 Structured recipe output: name, description, ingredients, instructions, nutrition, tips, substitutions, serving suggestions
-- 💾 SQLite persistence via SQLAlchemy ORM
+- 💾 Auto-saving to local SQLite persistence via SQLAlchemy ORM
 - 📖 Recipe History with reopen support
-- 📋 Copy to clipboard, 💾 Save, ⬇️ Download as Markdown
-- 🎨 Premium, responsive white / orange / green SaaS-style UI — pure HTML/CSS/JS, no frontend framework
+- 📋 Copy to clipboard, ⬇️ Download as Markdown
+- 🎨 Premium, responsive SaaS-style UI — pure HTML/CSS/JS, no frontend framework
+- 🌮 Dynamic Cuisine Stickers — background emojis match the cuisine you select!
+- 📺 YouTube Integration — instantly search for video tutorials of the generated recipe
 - 🔔 Toast notifications, loading spinners, smooth animations
 
 ---
@@ -30,14 +32,14 @@ Every recipe you save is persisted to a local SQLite database via SQLAlchemy, vi
 ```
 AI-Recipe-Generator/
 ├── auth/
-│   ├── api_key.py        # Live Groq API key verification
+│   ├── api_key.py        # Live Provider API key verification
 │   └── session.py        # Server-signed session helpers (never persists the key)
 ├── database/
 │   ├── database.py       # SQLAlchemy engine/session setup
 │   └── models.py         # Recipe ORM model
 ├── chains/
 │   ├── prompt.py         # LangChain PromptTemplate
-│   └── recipe_chain.py   # LCEL chain: PromptTemplate | ChatGroq | StrOutputParser
+│   └── recipe_chain.py   # LCEL chain: PromptTemplate | ChatModel | StrOutputParser
 ├── templates/
 │   ├── login.html        # API key verification page
 │   └── index.html        # Dashboard (generate + history)
@@ -81,27 +83,28 @@ Then open **http://127.0.0.1:8000** in your browser.
 ## Usage Flow
 
 1. Open the app — you'll land on the API key verification page.
-2. Select provider **Groq**, paste your Groq API key, click **Verify & Continue**.
-3. On success you're redirected to the dashboard and see **🟢 Connected to Groq**.
+2. Select your provider (Groq, OpenAI, Anthropic, Gemini), paste your API key, click **Verify & Continue**.
+3. On success you're redirected to the dashboard and see **🟢 Connected**.
 4. Fill in ingredients + preferences, click **Generate Recipe**.
-5. Copy, save, or download the result. Saved recipes appear under **Recipe History**.
-6. Click **Logout** at any time to clear your session and API key immediately.
+5. The recipe is automatically saved to your local database!
+6. Copy or download the result as Markdown. Saved recipes appear under **Recipe History**.
+7. Click **Logout** at any time to clear your session and API key immediately.
 
 ## LangChain Components Used
 
 | Concept | Where | Purpose |
 |---|---|---|
 | `PromptTemplate` | `chains/prompt.py` | Reusable, parameterized recipe prompt |
-| `ChatGroq` | `chains/recipe_chain.py` | LLM (Llama 3.3 70B via Groq), instantiated per-request with the user's session key |
+| `ChatModels` | `chains/recipe_chain.py` | LLMs instantiated per-request with the user's session key |
 | `RunnableSequence` (LCEL) | `chains/recipe_chain.py` | `prompt | llm | parser` pipeline built with the `|` operator |
 | `StrOutputParser` | `chains/recipe_chain.py` | Extracts plain text from the `AIMessage` before custom section parsing |
 
 ## API Key Authentication
 
-- The key is submitted once via the login form and verified with a minimal live Groq request.
+- The key is submitted once via the login form and verified with a minimal live request.
 - On success, it is placed **only** in the signed, server-side session cookie (`itsdangerous` via Starlette's `SessionMiddleware`).
 - It is **never** written to SQLite, `.env`, or any log file.
-- Every `ChatGroq` instance is built fresh, per request, using the key pulled from the current session.
+- Every `ChatModel` instance is built fresh, per request, using the key pulled from the current session.
 - **Logout** clears the entire session immediately.
 
 ## Screenshots
@@ -113,8 +116,6 @@ _Add screenshots of the login page and dashboard here._
 
 ## Future Improvements
 
-- Optional recipe image generation
 - Export to PDF in addition to Markdown
-- Multi-provider support (OpenAI, Anthropic) behind the same verification flow
 - User accounts with persistent, per-user recipe history
 - Ingredient-based recipe search across saved history
