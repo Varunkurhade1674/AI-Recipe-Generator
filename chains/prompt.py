@@ -32,7 +32,7 @@ Requirements:
 Respond using EXACTLY this structure (plain text, keep the headers as-is):
 
 RECIPE_NAME: <name of the dish>
-DISH_EMOJI: <a single emoji representing the dish>
+DISH_EMOJI: <a single emoji representing the COMPLETED dish (e.g. 🍲, 🍝, 🍛). DO NOT use raw ingredients.>
 DESCRIPTION: <2-3 sentence appetizing description>
 PREP_TIME: <e.g. 15 minutes>
 COOKING_TIME: <e.g. 30 minutes>
